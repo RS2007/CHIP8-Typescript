@@ -1,0 +1,6 @@
+notes.md
+dist/
+node_modules/
+.idea/
+.nvim/
+.vscode/
