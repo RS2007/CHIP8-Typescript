@@ -20,7 +20,6 @@
 		"typescript": "^4.8.4"
 	},
 	"dependencies": {
-		"@types/blessed": "^0.1.19",
 		"blessed": "^0.1.81"
 	}
 }

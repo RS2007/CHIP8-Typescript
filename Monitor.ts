@@ -4,7 +4,7 @@ import { BlessedParentClass } from './BlessedParentClass'
 
 export class Monitor extends BlessedParentClass {
 	frameBuffer: number[][]
-	screen: blessed.Widgets.Screen
+	screen
 	constructor() {
 		super()
 		this.frameBuffer = Array.from(new Array(SCREEN_HEIGHT), () => new Array(SCREEN_WIDTH))
@@ -14,5 +14,20 @@ export class Monitor extends BlessedParentClass {
 	clearDisplay() {
 		this.frameBuffer = Array.from(new Array(SCREEN_HEIGHT), () => new Array(SCREEN_WIDTH))
 		this.screen.clearRegion(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
+	}
+
+	drawPixel(x: number, y: number, bit: number): boolean {
+		let collision = false
+		if (this.frameBuffer[y][x] == 1 && bit == 1) {
+			collision = true
+		}
+		this.frameBuffer[y][x] ^= bit
+		if (this.frameBuffer[y][x]) {
+			this.screen.fillRegion(blessed.helpers.attrToBinary({ fg: 1 }), 'x', x, x + 1, y, y + 1)
+		} else {
+			this.screen.clearRegion(x, x + 1, y, y + 1)
+		}
+		this.screen.render()
+		return collision
 	}
 }

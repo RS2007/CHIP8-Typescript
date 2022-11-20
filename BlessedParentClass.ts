@@ -12,7 +12,7 @@ export class BlessedParentClass {
 		if (!this.instance) {
 			console.log(this.instance)
 			this.instance = new BlessedParentClass()
-			return this.instance;
+			return this.instance
 		} else {
 			return this.instance
 		}

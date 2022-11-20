@@ -1,4 +1,4 @@
-import { decoderOut } from './types';
+import { decoderOut } from './types'
 export class Decoder {
 	/*Class inspired from the risc-v decoder*/
 	/*takes an instruction(in binary) and converts it into usable fragments*/
@@ -12,6 +12,6 @@ export class Decoder {
 			y: (opcode & 0x00f0) >>> 4,
 			kk: opcode & 0x00ff,
 			firstFourBits: opcode >>> 12,
-		};
+		}
 	}
 }

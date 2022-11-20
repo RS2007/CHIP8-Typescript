@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { appendFileSync, readFileSync } from 'fs'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants'
 import { Decoder } from './Decoder'
 import { font } from './font'
@@ -46,8 +46,8 @@ export class Cpu {
 		const rom = readFileSync(`roms/${romName}`)
 		if (!rom) throw new Error('Rom not found in directory')
 
-		for (let i = 0x200; i < rom.length; ++i) {
-			this.ram[i] = rom[i]
+		for (let i = 0; i < rom.length; ++i) {
+			this.ram[i + 0x200] = rom[i]
 		}
 	}
 
@@ -76,11 +76,18 @@ export class Cpu {
 		}
 	}
 
+	step() {
+		const opcode = this.instructionFetch()
+		const decodedInstruction = this.decode(opcode)
+		this.execute(decodedInstruction)
+	}
+
 	decode(opcode: number) {
 		return Decoder.decode(opcode)
 	}
 
 	execute(instruction: decoderOut) {
+		appendFileSync('./debug.txt', `${JSON.stringify(instruction)}\n`)
 		const { opcode, nnn, n, x, y, kk, firstFourBits } = instruction
 		switch (firstFourBits) {
 			case 0x0:
@@ -222,6 +229,7 @@ export class Cpu {
 				break
 			case 0xc:
 				this.registerFile[x] = Math.floor(Math.random() * 255) & kk
+				this.incrementPC()
 				break
 			case 0xd:
 				for (let i = this.I; i < this.I + n; ++i) {
@@ -229,15 +237,8 @@ export class Cpu {
 						const bit = this.ram[i] & (1 << (7 - j)) ? 1 : 0
 						const xMod = this.registerFile[x] % SCREEN_WIDTH
 						const yMod = this.registerFile[y] % SCREEN_HEIGHT
-						this.registerFile[0xf] = 0
-						if (bit != 0) {
-							if (this.monitor.frameBuffer[xMod][yMod]) {
-								this.monitor.frameBuffer[xMod][yMod] = 0
-								this.registerFile[0xf] = 1
-							} else {
-								this.monitor.frameBuffer[xMod][yMod] = 1
-							}
-						}
+						const collision = this.monitor.drawPixel(xMod, yMod, bit)
+						this.registerFile[0xf] = collision ? 1 : 0
 					}
 				}
 				this.incrementPC()
@@ -253,6 +254,10 @@ export class Cpu {
 						if (this.keyboard.keys != this.registerFile[x]) this.jumpAnInstruction()
 						else this.incrementPC()
 						// skip next instruction if key registerFile[x] is not pressed
+						break
+					default:
+						console.error('Invalid opcode')
+						this.incrementPC()
 						break
 				}
 				break
@@ -274,8 +279,8 @@ export class Cpu {
 						this.incrementPC()
 						break
 					case 0x33:
-						this.ram[this.I] = (this.registerFile[x] / 100) % 10
-						this.ram[this.I + 1] = (this.registerFile[x] / 10) % 10
+						this.ram[this.I] = Math.floor(this.registerFile[x] / 100) % 10
+						this.ram[this.I + 1] = Math.floor(this.registerFile[x] / 10) % 10
 						this.ram[this.I + 2] = this.registerFile[x] % 10
 						this.incrementPC()
 						break
