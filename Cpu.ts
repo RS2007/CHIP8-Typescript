@@ -45,9 +45,8 @@ export class Cpu {
 
 		const rom = readFileSync(`roms/${romName}`)
 		if (!rom) throw new Error('Rom not found in directory')
-
 		for (let i = 0; i < rom.length; ++i) {
-			this.ram[i + 0x200] = rom[i]
+			this.ram[i + 0x200] = rom[i];
 		}
 	}
 
@@ -77,6 +76,9 @@ export class Cpu {
 	}
 
 	step() {
+		if(this.programCounter > 4094){
+			throw new Error("out of bounds")
+		}
 		const opcode = this.instructionFetch()
 		const decodedInstruction = this.decode(opcode)
 		this.execute(decodedInstruction)
@@ -87,7 +89,7 @@ export class Cpu {
 	}
 
 	execute(instruction: decoderOut) {
-		appendFileSync('./debug.txt', `${JSON.stringify(instruction)}\n`)
+		appendFileSync('./debug.txt', `${JSON.stringify({...instruction,opcode:instruction.opcode.toString(16)})}\n`)
 		const { opcode, nnn, n, x, y, kk, firstFourBits } = instruction
 		switch (firstFourBits) {
 			case 0x0:
@@ -103,8 +105,12 @@ export class Cpu {
 						this.stackPointer -= 1
 						break
 					default:
-						console.error('Invalid opcode')
-						this.incrementPC()
+						if (opcode == 0) {
+							this.incrementPC()
+						} else {
+							console.error('Invalid opcode: 0x0')
+							this.incrementPC()
+						}
 						break
 				}
 				break
@@ -225,7 +231,6 @@ export class Cpu {
 				break
 			case 0xb:
 				this.programCounter = nnn + this.registerFile[0]
-				this.incrementPC()
 				break
 			case 0xc:
 				this.registerFile[x] = Math.floor(Math.random() * 255) & kk
@@ -235,8 +240,8 @@ export class Cpu {
 				for (let i = this.I; i < this.I + n; ++i) {
 					for (let j = 0; j < 8; ++j) {
 						const bit = this.ram[i] & (1 << (7 - j)) ? 1 : 0
-						const xMod = this.registerFile[x] % SCREEN_WIDTH
-						const yMod = this.registerFile[y] % SCREEN_HEIGHT
+						const xMod = (this.registerFile[x]+j) % SCREEN_WIDTH
+						const yMod = (this.registerFile[y]+i-this.I) % SCREEN_HEIGHT
 						const collision = this.monitor.drawPixel(xMod, yMod, bit)
 						this.registerFile[0xf] = collision ? 1 : 0
 					}

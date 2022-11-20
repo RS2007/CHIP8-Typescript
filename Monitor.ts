@@ -23,7 +23,7 @@ export class Monitor extends BlessedParentClass {
 		}
 		this.frameBuffer[y][x] ^= bit
 		if (this.frameBuffer[y][x]) {
-			this.screen.fillRegion(blessed.helpers.attrToBinary({ fg: 1 }), 'x', x, x + 1, y, y + 1)
+			this.screen.fillRegion(blessed.helpers.attrToBinary({ fg: 1 }), '█', x, x + 1, y, y + 1)
 		} else {
 			this.screen.clearRegion(x, x + 1, y, y + 1)
 		}
