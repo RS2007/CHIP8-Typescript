@@ -1,5 +1,6 @@
 import { BlessedParentClass } from './BlessedParentClass'
 import blessed from 'blessed'
+import { physicalKeyMap } from './physicalKeyMap'
 
 export class Keyboard {
 	_keys: number
@@ -15,12 +16,11 @@ export class Keyboard {
 			process.exit(0)
 		})
 
-		this.screen.on('keypress', (key) => {
+		this.screen.on('keypress', (key: string) => {
 			// set key = value
-			const keyValue = 0x5 // TODO: to be assigned properly later
-			this.setKey(keyValue)
-
-			console.log({ key })
+			if (physicalKeyMap[key]) {
+				this.setKey(physicalKeyMap[key])
+			}
 		})
 	}
 

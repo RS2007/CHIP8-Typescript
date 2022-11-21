@@ -7,7 +7,9 @@ export class Monitor extends BlessedParentClass {
 	screen
 	constructor() {
 		super()
-		this.frameBuffer = Array.from(new Array(SCREEN_HEIGHT), () => (new Array(SCREEN_WIDTH)).fill(0))
+		this.frameBuffer = Array.from(new Array(SCREEN_HEIGHT), () =>
+			new Array(SCREEN_WIDTH).fill(0)
+		)
 		this.screen = blessed.screen({ smartCSR: true })
 	}
 
@@ -23,7 +25,7 @@ export class Monitor extends BlessedParentClass {
 		}
 		this.frameBuffer[y][x] ^= bit
 		if (this.frameBuffer[y][x]) {
-			this.screen.fillRegion(blessed.helpers.attrToBinary({ fg: 1 }), '█', x, x + 1, y, y + 1)
+			this.screen.fillRegion(blessed.helpers.attrToBinary({ fg: 2 }), '█', x, x + 1, y, y + 1)
 		} else {
 			this.screen.clearRegion(x, x + 1, y, y + 1)
 		}

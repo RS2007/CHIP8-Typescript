@@ -15,6 +15,7 @@ export class Cpu {
 	stackPointer: number
 	delayTimer: number
 	stall: boolean
+	soundTimer: number
 	monitor: Monitor
 	keyboard: Keyboard
 
@@ -24,6 +25,7 @@ export class Cpu {
 		this.I = 0 //(JALR register)
 		// Special Purpose registers
 		this.delayTimer = 0
+		this.soundTimer = 0
 		// pseudo registers
 		this.stack = new Uint16Array(16)
 		// 16 recursive calls possible
@@ -262,7 +264,9 @@ export class Cpu {
 						break
 					case 0xa1:
 						if (this.keyboard.keys != this.registerFile[x]) this.jumpAnInstruction()
-						else this.incrementPC()
+						else {
+							this.incrementPC()
+						}
 						// skip next instruction if key registerFile[x] is not pressed
 						break
 					default:
@@ -279,6 +283,7 @@ export class Cpu {
 						break
 					case 0x0a: {
 						const keyPress = this.keyboard.waitForKeyPress()
+						if (!keyPress) return
 						this.registerFile[x] = keyPress
 						this.incrementPC()
 						break
@@ -288,6 +293,22 @@ export class Cpu {
 						this.delayTimer = this.registerFile[x]
 						this.incrementPC()
 						break
+
+					case 0x18:
+						this.soundTimer = this.registerFile[x]
+						this.incrementPC()
+						break
+
+					case 0x1e:
+						this.I += this.registerFile[x]
+						this.incrementPC()
+						break
+
+					case 0x29:
+						this.I = this.registerFile[x] * 5
+						this.incrementPC()
+						break
+
 					case 0x33:
 						this.ram[this.I] = Math.floor(this.registerFile[x] / 100) % 10
 						this.ram[this.I + 1] = Math.floor(this.registerFile[x] / 10) % 10

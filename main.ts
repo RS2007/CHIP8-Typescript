@@ -1,7 +1,7 @@
 import { Cpu } from './Cpu'
 
 const core = new Cpu()
-core.loadROM('test_opcode.ch8')
+core.loadROM('chip8-test-suite.ch8')
 
 let count = 0
 function run() {
