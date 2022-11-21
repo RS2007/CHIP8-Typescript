@@ -46,7 +46,7 @@ export class Cpu {
 		const rom = readFileSync(`roms/${romName}`)
 		if (!rom) throw new Error('Rom not found in directory')
 		for (let i = 0; i < rom.length; ++i) {
-			this.ram[i + 0x200] = rom[i];
+			this.ram[i + 0x200] = rom[i]
 		}
 	}
 
@@ -54,7 +54,9 @@ export class Cpu {
 		// All instructions are 2 bytes long
 		// MSB first(big endian number)
 		// first byte of each instruction should be located at even address
-		return (this.ram[this.programCounter] << 8) | this.ram[this.programCounter + 1]
+		const ins = (this.ram[this.programCounter] << 8) | this.ram[this.programCounter + 1]
+		appendFileSync('./debug.txt', ins.toString(16) + '\n')
+		return ins
 	}
 
 	incrementPC() {
@@ -76,8 +78,8 @@ export class Cpu {
 	}
 
 	step() {
-		if(this.programCounter > 4094){
-			throw new Error("out of bounds")
+		if (this.programCounter > 4094) {
+			throw new Error('out of bounds')
 		}
 		const opcode = this.instructionFetch()
 		const decodedInstruction = this.decode(opcode)
@@ -89,7 +91,7 @@ export class Cpu {
 	}
 
 	execute(instruction: decoderOut) {
-		appendFileSync('./debug.txt', `${JSON.stringify({...instruction,opcode:instruction.opcode.toString(16)})}\n`)
+		// appendFileSync('./debug.txt', `${JSON.stringify({...instruction,opcode:instruction.opcode.toString(16)})}\n`)
 		const { opcode, nnn, n, x, y, kk, firstFourBits } = instruction
 		switch (firstFourBits) {
 			case 0x0:
@@ -240,8 +242,8 @@ export class Cpu {
 				for (let i = this.I; i < this.I + n; ++i) {
 					for (let j = 0; j < 8; ++j) {
 						const bit = this.ram[i] & (1 << (7 - j)) ? 1 : 0
-						const xMod = (this.registerFile[x]+j) % SCREEN_WIDTH
-						const yMod = (this.registerFile[y]+i-this.I) % SCREEN_HEIGHT
+						const xMod = (this.registerFile[x] + j) % SCREEN_WIDTH
+						const yMod = (this.registerFile[y] + i - this.I) % SCREEN_HEIGHT
 						const collision = this.monitor.drawPixel(xMod, yMod, bit)
 						this.registerFile[0xf] = collision ? 1 : 0
 					}
