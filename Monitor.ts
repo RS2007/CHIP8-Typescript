@@ -7,7 +7,7 @@ export class Monitor extends BlessedParentClass {
 	screen
 	constructor() {
 		super()
-		this.frameBuffer = Array.from(new Array(SCREEN_HEIGHT), () => new Array(SCREEN_WIDTH))
+		this.frameBuffer = Array.from(new Array(SCREEN_HEIGHT), () => (new Array(SCREEN_WIDTH)).fill(0))
 		this.screen = blessed.screen({ smartCSR: true })
 	}
 

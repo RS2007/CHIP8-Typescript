@@ -20,7 +20,7 @@ export class Keyboard {
 			const keyValue = 0x5 // TODO: to be assigned properly later
 			this.setKey(keyValue)
 
-			console.log({key})
+			console.log({ key })
 		})
 	}
 

@@ -54,7 +54,10 @@ export class Cpu {
 		// All instructions are 2 bytes long
 		// MSB first(big endian number)
 		// first byte of each instruction should be located at even address
-		const ins = (this.ram[this.programCounter] << 8) | this.ram[this.programCounter + 1]
+		let ins = (this.ram[this.programCounter] << 8) | this.ram[this.programCounter + 1]
+		if (this.ram[this.programCounter] === 0x0) {
+			ins = this.ram[this.programCounter + 1]
+		}
 		appendFileSync('./debug.txt', ins.toString(16) + '\n')
 		return ins
 	}
@@ -123,7 +126,7 @@ export class Cpu {
 			case 0x2:
 				// call subroutine at nnn
 				this.stackPointer += 1
-				this.stack[this.stackPointer] = this.programCounter
+				this.stack[this.stackPointer] = this.programCounter + 2
 				this.programCounter = nnn
 				break
 			case 0x3:

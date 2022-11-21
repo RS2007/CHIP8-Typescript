@@ -10,7 +10,6 @@ export class BlessedParentClass {
 
 	public static getInstance(): BlessedParentClass {
 		if (!this.instance) {
-			console.log(this.instance)
 			this.instance = new BlessedParentClass()
 			return this.instance
 		} else {
