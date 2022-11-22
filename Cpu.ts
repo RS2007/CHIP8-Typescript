@@ -160,7 +160,7 @@ export class Cpu {
 				switch (n) {
 					case 0x0:
 						// load register value in another(load)
-						this.registerFile[x] == this.registerFile[y]
+						this.registerFile[x] = this.registerFile[y]
 						this.incrementPC()
 						break
 					case 0x1:
@@ -283,7 +283,7 @@ export class Cpu {
 						break
 					case 0x0a: {
 						const keyPress = this.keyboard.waitForKeyPress()
-						if (!keyPress) return
+						if (keyPress == undefined) return
 						this.registerFile[x] = keyPress
 						this.incrementPC()
 						break
@@ -322,8 +322,8 @@ export class Cpu {
 						this.incrementPC()
 						break
 					case 0x65:
-						for (let i = this.I; i <= this.I + x; ++i) {
-							this.ram[i] = this.registerFile[i - this.I]
+						for (let i = 0; i < x + 1; ++i) {
+							this.registerFile[i] = this.ram[this.I + i]
 						}
 						this.incrementPC()
 						break

@@ -1,7 +1,7 @@
 import { Cpu } from './Cpu'
 
 const core = new Cpu()
-core.loadROM('chip8-test-suite.ch8')
+core.loadROM('ibm.ch8')
 
 let count = 0
 function run() {
@@ -13,4 +13,4 @@ function run() {
 	}
 	core.step()
 }
-setInterval(run, 2)
+setInterval(run, 5)
