@@ -2,7 +2,7 @@
 
 Clone the repository and run the following commands in your terminal
 ```bash
-cd CHIP8-typescript
+cd CHIP8-Typescript
 npm install
 npm start
 ```
