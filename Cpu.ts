@@ -283,7 +283,10 @@ export class Cpu {
 						break
 					case 0x0a: {
 						const keyPress = this.keyboard.waitForKeyPress()
-						if (keyPress == undefined) return
+						if (!keyPress && typeof(keyPress) != "number"){
+              console.log("in")
+              return
+            }
 						this.registerFile[x] = keyPress
 						this.incrementPC()
 						break

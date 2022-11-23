@@ -1,4 +1,4 @@
-export interface decoderOut {
+export type decoderOut = {
 	opcode: number
 	nnn: number
 	n: number
