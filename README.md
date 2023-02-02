@@ -7,9 +7,11 @@ npm install
 npm start
 ```
 
-## Demo
+## Demo with some test roms
 ![image](./images/pong.png)
-*Pong*
+
+**Pong**
 
 ![image](./images/ibm.png)
-*IBM Logo*
+
+**IBM Logo**

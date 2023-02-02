@@ -1,4 +1,4 @@
-import { appendFileSync, readFileSync } from 'fs'
+import { readFileSync } from 'fs'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants'
 import { Decoder } from './Decoder'
 import { font } from './font'
@@ -60,7 +60,6 @@ export class Cpu {
 		if (this.ram[this.programCounter] === 0x0) {
 			ins = this.ram[this.programCounter + 1]
 		}
-		appendFileSync('./debug.txt', ins.toString(16) + '\n')
 		return ins
 	}
 
