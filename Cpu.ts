@@ -283,7 +283,6 @@ export class Cpu {
 					case 0x0a: {
 						const keyPress = this.keyboard.waitForKeyPress()
 						if (!keyPress && typeof(keyPress) != "number"){
-              console.log("in")
               return
             }
 						this.registerFile[x] = keyPress
